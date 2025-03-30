@@ -1,44 +1,39 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Dashboard() {
-  const [data, setData] = useState(null);      // State for API data
-  const [error, setError] = useState(null);    // State for errors
-  const navigate = useNavigate();              // React Router navigation
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");   // Retrieve the token
+    const token = localStorage.getItem("token");
 
     if (!token) {
-      navigate("/login");                         // Redirect to login if no token
+      navigate("/login");
       return;
     }
 
-    // Fetch API
     fetch("http://127.0.0.1:8000/api/dashboard/", {
       method: "GET",
       headers: {
-        "Authorization": `Token ${token}`,          // ✅ Correct token format
+        "Authorization": `Token ${token}`,
         "Content-Type": "application/json"
       }
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Unauthorized");          // Handle unauthorized access
+          throw new Error("Unauthorized");
         }
         return response.json();
       })
-      .then((data) => {
-        console.log("API Response:", data);
-        setData(data);                             // Store API data in state
-      })
+      .then((data) => setData(data))
       .catch((error) => {
         console.error("Error:", error);
-        setError("Failed to fetch data.");          // Store error in state
-        navigate("/login");                        // Redirect if unauthorized
+        setError("Failed to fetch data.");
+        navigate("/login");
       });
-
-  }, [navigate]);   // Dependency array ensures API call runs only once on render
+  }, [navigate]);
 
   return (
     <div>
@@ -47,11 +42,16 @@ function Dashboard() {
       {data ? (
         <div>
           <h2>Welcome!</h2>
-          <p>{data.message}</p>                   {/* Display API data */}
+          <p>{data.message}</p>
         </div>
       ) : (
         <p>Loading...</p>
       )}
+
+      {/* Logout button */}
+      <Link to="/logout">
+        <button>Logout</button>
+      </Link>
     </div>
   );
 }
