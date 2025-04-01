@@ -1,37 +1,36 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Logout() {
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const handleLogout = async () => {
     const token = localStorage.getItem("token");
 
-    if (token) {
-      fetch("http://127.0.0.1:8000/api/logout/", {
-        method: "POST",
-        headers: {
-          "Authorization": `Token ${token}`,
-          "Content-Type": "application/json",
-        }
-      })
-        .then((response) => {
-          if (response.ok) {
-            localStorage.removeItem("token");  // ✅ Remove token from storage
-            navigate("/login");                // ✅ Redirect to login
-          } else {
-            console.error("Logout failed");
-          }
-        })
-        .catch((error) => console.error("Error:", error));
-    } else {
-      navigate("/login");  // Redirect to login if no token
+    try {
+      // Synchronously clear the token before making the API call
+      localStorage.removeItem("token");
+
+      // Make API call to backend logout endpoint
+      await axios.post("http://127.0.0.1:8000/api/logout/", {}, {
+        headers: { Authorization: `Token ${token}` }
+      });
+
+      // Ensure no leftover async operations before navigating
+      setTimeout(() => {
+        navigate("/login");
+      }, 0);
+
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("Failed to logout. Try again.");
     }
-  }, [navigate]);
+  };
 
   return (
     <div>
-      <h1>Logging out...</h1>
+      <h2>Logout</h2>
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 }

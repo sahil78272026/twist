@@ -14,6 +14,7 @@ const Profile = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    console.log("Running useEffect in Profile.jsx", token)
 
     if (!token) {
       navigate("/login");
