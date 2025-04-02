@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import ProfileImageUpload from "./ProfileImageUpload";
+import SearchProfiles from "./SearchProfiles";
 
 function Dashboard() {
   const [profiles, setProfiles] = useState([]);
@@ -118,6 +119,9 @@ function Dashboard() {
           <p>No profile image available</p>
         )}
       </div>
+
+      <div><h1>Welcome to the Dating App</h1>
+        <SearchProfiles /></div>
     </div>
   );
 }

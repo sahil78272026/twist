@@ -9,6 +9,7 @@ function UpdateProfile() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    console.log(token)
     if (!token) {
       navigate("/login");
       return;
@@ -18,10 +19,13 @@ function UpdateProfile() {
       headers: { Authorization: `Token ${token}` }
     })
     .then((res) => {
+      console.log(res.data.username)
+      console.log(res.data.email)
       setUsername(res.data.username);
-      setEmail(res.data.email);s
+      setEmail(res.data.email);
     })
-    .catch(() => {
+    .catch((error) => {
+      console.error(error.response? error.response.data:error.message)
       alert("Failed to fetch profile data.");
       navigate("/dashboard");
     });
